@@ -1,23 +1,20 @@
-import os
 import numpy as np
 import tensorflow as tf
-import pandas as pd
-import cv2
-import matplotlib.pyplot as plt
-import glob 
-import shutil
-import datetime
 
-from tensorflow.keras import backend as K
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications.vgg19 import VGG19
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Concatenate, Subtract, concatenate, Input, Flatten, Activation, Dense, Dropout, Lambda, Conv2D, BatchNormalization, MaxPooling2D
+from tensorflow.keras.layers import Subtract, Input, Flatten, Activation, Dense, Dropout, BatchNormalization
 from tensorflow.keras.optimizers import Adam, SGD
-from tensorflow.keras.callbacks import EarlyStopping
 
 def prepare_label_for_ranking(labels):
-    # Format the labels of left and right images
+    """Prepare the labels for a ranking task.
+    
+    Args:
+        labels (list): List of labels corresponding to the images.
+    
+    Returns:
+        tuple: A tuple containing the training, validation, and test labels.
+    """
     labels_formatted = []
 
     for label in labels:
@@ -28,6 +25,7 @@ def prepare_label_for_ranking(labels):
 
     labels_formatted = np.array(labels_formatted)
     labels_formatted = tf.convert_to_tensor(labels_formatted)
+    
     # Split the data into training, validation, and test sets using array slicing
     train_size = int(0.6 * len(labels))
     valid_size = int(0.2 * len(labels))
@@ -37,6 +35,7 @@ def prepare_label_for_ranking(labels):
     y_test = labels_formatted[train_size + valid_size:]
     
     return y_train, y_valid, y_test
+
 
 def create_ranking_network(img_size):
     """
@@ -103,8 +102,6 @@ def create_meta_network(img_size, weights=None):
         print('Loading weights ...')
         model.load_weights(weights)
 
-
-    sgd = SGD(learning_rate=1e-6, decay=1e-6, momentum=0.393, nesterov=True)
     model.compile(optimizer=Adam(learning_rate=0.000001), loss="binary_crossentropy", metrics=['accuracy'])
 
     return model

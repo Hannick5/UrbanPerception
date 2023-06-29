@@ -70,6 +70,28 @@ def prepare_prediction_siamese(directory, shape):
 
     return X_pred
 
+def prepare_prediction_siamese_mapillary(directory, shape):
+    image_pred = []
+    files = os.listdir(directory)
+    total_files = len(files)
+    progress = tqdm(total=total_files, desc="Processing Images", unit="image")
+
+    for filename in files:
+        img_file = os.path.join(directory, filename)
+        image1 = cv2.imread(img_file)
+        image1 = cv2.resize(image1, (shape, shape))
+        image1 = image1.astype(np.float32) / 255.0
+        image_pred.append(image1)
+        progress.update(1)
+
+    progress.close()
+
+    X_pred = tf.convert_to_tensor(np.array(image_pred))
+
+    return X_pred
+
+
+
 def prepare_dataset_for_network(image1_array, image2_array, labels):
     # Format the labels of left and right images
     labels_formatted = []
@@ -105,3 +127,44 @@ def prepare_dataset_for_network(image1_array, image2_array, labels):
     y_test = labels_formatted[train_size + valid_size:]
     
     return (X_train, y_train), (X_valid, y_valid), (X_test, y_test)
+
+def prepare_dataset_generators(image1_array, image2_array, labels, batch_size, model_type):
+    labels_formatted = []
+    
+    if model_type == "comparison":
+
+        for label in labels:
+            if label == "left":
+                labels_formatted.append([1, 0])
+            elif label == "right":
+                labels_formatted.append([0, 1])
+    elif model_type == "ranking":
+         for label in labels:
+            if label == "left":
+                labels_formatted.append(1)
+            elif label == "right":
+                labels_formatted.append(0)
+
+    labels_formatted = np.array(labels_formatted)
+    image1_array = np.array(image1_array)
+    image2_array = np.array(image2_array)
+
+    train_size = int(0.6 * len(image1_array))
+    valid_size = int(0.2 * len(image1_array))
+
+    def data_generator(images1, images2, labels):
+        num_samples = len(labels)
+        while True:
+            indices = np.random.permutation(num_samples)
+            for i in range(0, num_samples, batch_size):
+                batch_indices = indices[i:i+batch_size]
+                batch_images1 = images1[batch_indices]
+                batch_images2 = images2[batch_indices]
+                batch_labels = labels[batch_indices]
+                yield [batch_images1, batch_images2], batch_labels
+
+    train_generator = data_generator(image1_array[:train_size], image2_array[:train_size], labels_formatted[:train_size])
+    valid_generator = data_generator(image1_array[train_size:train_size + valid_size], image2_array[train_size:train_size + valid_size], labels_formatted[train_size:train_size + valid_size])
+    test_generator = data_generator(image1_array[train_size + valid_size:], image2_array[train_size + valid_size:], labels_formatted[train_size + valid_size:])
+
+    return train_generator, valid_generator, test_generator, train_size, valid_size

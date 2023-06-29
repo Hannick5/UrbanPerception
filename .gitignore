@@ -1,0 +1,5 @@
+*.jpg
+*.csv
+*.h5
+*.npy
+.DS_Store
