@@ -1,7 +1,6 @@
 *.jpg
 *.csv
 *.h5
-*.pptx
 *.npy
 .DS_Store
 __pycache__
