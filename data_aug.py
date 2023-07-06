@@ -135,3 +135,65 @@ def load_data(folder):
     new_image2_array = np.array(new_image2_array)
 
     return new_image1_array, new_image2_array, new_labels
+
+def apply_random_contrast(image_array):
+    """Apply random contrast adjustment to an image array.
+    
+    Args:
+        image_array (numpy.ndarray): Input image array.
+    
+    Returns:
+        numpy.ndarray: Image array with random contrast adjustment.
+    """
+    # Generate a random contrast value between 0.8 and 1.2
+    contrast_factor = np.random.uniform(0.8, 1.2)
+    
+    # Apply contrast adjustment
+    adjusted_image = image_array * contrast_factor
+    
+    # Clip the pixel values to the valid range [0, 255]
+    adjusted_image = np.clip(adjusted_image, 0, 255)
+    
+    return adjusted_image
+
+def data_aug_with_contrast(image1_array, image2_array, labels, save_folder):
+    """Apply data augmentation techniques to images and labels.
+    
+    Args:
+        image1_array (list): List of original image arrays for the first set of images.
+        image2_array (list): List of original image arrays for the second set of images.
+        labels (list): List of labels corresponding to the images.
+        save_folder (str): Path to the folder where augmented images and labels will be saved.
+    
+    Returns:
+        tuple: A tuple containing the new augmented image arrays for image1, image2, and the new labels.
+    """
+    # Convert image and label lists to numpy arrays
+    image1_array = np.array(image1_array)
+    image2_array = np.array(image2_array)
+    labels = np.array(labels)
+
+    # Apply random contrast adjustment to the image arrays
+    new_image1_array = np.array([apply_random_contrast(image) for image in image1_array])
+    new_image2_array = np.array([apply_random_contrast(image) for image in image2_array])
+
+    # Concatenate the newly generated images with the original images
+    new_image1_array = np.concatenate((image1_array, new_image1_array), axis=0)
+    new_image2_array = np.concatenate((image2_array, new_image2_array), axis=0)
+
+    # Concatenate the original labels with the newly generated labels
+    new_labels = np.concatenate((labels, labels), axis=0)
+    
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
+    
+    # Save each augmented image in npy format
+    for i, image in enumerate(new_image1_array):
+        np.save(os.path.join(save_folder, f'image1_{i}.npy'), image)
+
+    for i, image in enumerate(new_image2_array):
+        np.save(os.path.join(save_folder, f'image2_{i}.npy'), image)
+    
+    np.save(os.path.join(save_folder, 'new_labels.npy'), new_labels)
+    
+    return new_image1_array, new_image2_array, new_labels
