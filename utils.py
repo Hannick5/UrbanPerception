@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import tensorflow as tf
+import cv2
 
 def test_accuracy(model, X_test, y_test):
     """Evaluate the test accuracy of a model.
@@ -100,3 +102,32 @@ def plot_ranking_predict(ranking_model, X_pred, save_path):
     plt.tight_layout()
     plt.savefig(save_path)
     plt.show()
+
+def generate_saliency_map(model, image1, image2):
+    # Calculez les gradients de sortie par rapport aux entrées
+    with tf.GradientTape() as tape:
+        tape.watch(image1)
+        tape.watch(image2)
+        outputs = model([image1[None, ...], image2[None, ...]])
+        predictions = outputs[0]  # Supposons que les prédictions se trouvent dans le premier élément de la sortie
+
+    # Calculez les poids de saillance
+    gradients = tape.gradient(predictions, [image1, image2])
+    saliency_weights = np.mean(np.abs(gradients[0]), axis=-1) + np.mean(np.abs(gradients[1]), axis=-1)
+
+    # Normalisez les poids de saillance dans la plage [0, 1]
+    saliency_map = saliency_weights / np.max(saliency_weights)
+
+    # Superposez la carte de saillance sur l'image d'origine
+    saliency_map = saliency_map[..., np.newaxis]  # Ajouter une dimension pour correspondre aux canaux de couleur
+    heatmap = np.uint8(255 * saliency_map)  # Convertir en échelle de gris
+    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)  # Appliquer la coloration du jet
+
+    # Normalisez l'image d'origine entre 0 et 1 pour la superposition
+    image1_normalized = image1 / np.max(image1)
+    image1_normalized = np.uint8(255 * image1_normalized)  # Convertir en échelle de gris
+
+    # Combine l'image d'origine avec la carte de saillance
+    superimposed_image = cv2.addWeighted(image1_normalized, 0.6, heatmap, 0.4, 0)
+
+    return superimposed_image

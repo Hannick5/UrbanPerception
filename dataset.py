@@ -44,7 +44,7 @@ def prepare_dataset_arrays(image_folder, data, shape):
                 image2 = image2.astype(np.float32) / 255.0
                 image2_array.append(image2)
                 progress.update(1)
-    
+        
     progress.close()
                 
     return image1_array, image2_array, labels
