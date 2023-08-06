@@ -27,8 +27,8 @@ Here are some examples of curves you can find :
 
 
 <p align=center float="left">
-  <img src="Result/Streetview_Result/Comparison_Handpicked_DataAugmentation_With_contrast/accuracy_curve.png" width="200" />
-  <img src="Result/Streetview_Result/Comparison_Handpicked_DataAugmentation_With_contrast/loss_curve.png" width="200" /> 
+  <img src="Result/Streetview_Result/Comparison_Handpicked_DataAugmentation_With_contrast/accuracy_curve.png" width="400" />
+  <img src="Result/Streetview_Result/Comparison_Handpicked_DataAugmentation_With_contrast/loss_curve.png" width="400" /> 
 
   <br>
   <em>Accuracy and loss curves for the Streetview ranking model using VGG19.</em>
