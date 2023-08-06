@@ -25,12 +25,12 @@ The two main models being trained are a comparison model and a ranking model. Th
 
 Here are some examples of curves you can find : 
 
-<div style="display: flex; justify-content: center;">
-  <figure style="text-align: center; flex: 1;">
+<div align="center">
+  <figure style="text-align: center;">
     <img src="Result/Streetview_Result/Comparison_Handpicked_DataAugmentation_With_contrast/accuracy_curve.png" alt="Curve 1" width="300">
     <figcaption style="font-style: italic; font-size: 14px;">VGG19 Streetview Accuracy curve</figcaption>
   </figure>
-  <figure style="text-align: center; flex: 1;">
+  <figure style="text-align: center;">
     <img src="Result/Streetview_Result/Comparison_Handpicked_DataAugmentation_With_contrast/loss_curve.png" alt="Curve 2" width="300">
     <figcaption style="font-style: italic; font-size: 14px;">VGG19 Streetview Loss curve</figcaption>
   </figure>
