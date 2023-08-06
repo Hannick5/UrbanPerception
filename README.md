@@ -13,6 +13,7 @@ This repository contains the models that were trained on the "connection to natu
 
 <p align="center">
   <img src="Result/ArcGIS_Results/Mapillary_VGG19/map.png" alt="Heatmap generated with the classification model trained on Mapillary data using the VGG19 architecture." width="600">
+  <br>
   <em>Heatmap generated with the classification model trained on Mapillary data using the VGG19 architecture.</em>
 </p>    
 
@@ -37,10 +38,11 @@ Here are some examples of curves you can find :
 
 You can also find some code for the interaction between the Mapillary API here is a diagram of the processs : 
 
-<figure style="text-align: center;">
+<p align="center">
   <img src="Mapillary/scheme.png" alt="Diagram of the API request process to Mapillary." width="600">
+  <br>
   <em>Diagram of the API request process to Mapillary.</em>
-</figure>
+</p>    
 
 
 ## Author
