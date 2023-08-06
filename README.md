@@ -38,7 +38,7 @@ Here are some examples of curves you can find :
 You can also find some code for the interaction between the Mapillary API here is a diagram of the processs : 
 
 <figure style="text-align: center;">
-  <img src="Mapillary/scheme.png" alt="Heatmap generated with the classification model trained on Mapillary data using the VGG19 architecture." width="600">
+  <img src="Mapillary/scheme.png" alt="Diagram of the API request process to Mapillary." width="600">
   <figcaption style="text-align: center; font-style: italic; font-size: 14px;">Diagram of the API request process to Mapillary.</figcaption>
 </figure>
 
